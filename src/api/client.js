@@ -3,7 +3,9 @@ import axios from 'axios';
 // In dev, Vite proxies /api to the backend. In production set VITE_API_URL.
 const baseURL = import.meta.env.VITE_API_URL || '/api';
 
-const api = axios.create({ baseURL });
+// Generous timeout: the free Render backend sleeps when idle and the first
+// request after a cold start can take ~30-50s to wake it.
+const api = axios.create({ baseURL, timeout: 60000 });
 
 // Attach the stored JWT to every request.
 api.interceptors.request.use((config) => {

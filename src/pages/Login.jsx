@@ -20,7 +20,13 @@ export default function Login() {
       await login(email, password);
       navigate('/', { replace: true });
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed. Check your connection.');
+      if (err.response?.data?.error) {
+        setError(err.response.data.error);
+      } else if (err.code === 'ECONNABORTED') {
+        setError('The server is waking up (free hosting). Please try again in a few seconds.');
+      } else {
+        setError('Cannot reach the server. Check your connection and try again.');
+      }
     } finally {
       setLoading(false);
     }
